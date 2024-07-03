@@ -1,53 +1,82 @@
-import React, { useEffect, useState } from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+// Filename: index.js
+// Combined code from all files
 
-const App = () => {
-  const fullText = 'Hi, this is Apply.\nCreating mobile apps is now as simple as typing text.\nJust input your idea and press APPLY, and our platform does the rest...';
-  const [displayedText, setDisplayedText] = useState('');
-  const [index, setIndex] = useState(0);
-  const [isPaused, setIsPaused] = useState(false);
+import React, { useState } from 'react';
+import { SafeAreaView, StyleSheet, Text, TextInput, Button, View } from 'react-native';
 
-  useEffect(() => {
-    if (isPaused) return;
-
-    const interval = setInterval(() => {
-      setDisplayedText((prev) => prev + fullText[index]);
-      setIndex((prev) => {
-        if (prev === fullText.length - 1) {
-          setIsPaused(true);
-          setTimeout(() => {
-            setDisplayedText('');
-            setIndex(0);
-            setIsPaused(false);
-          }, 2000);
-          return 0;
-        }
-        return prev + 1;
-      });
-    }, 100);
-
-    return () => clearInterval(interval);
-  }, [index, isPaused]);
-
-  return (
-    <View style={styles.container}>
-      <Text style={styles.text}>{displayedText}</Text>
-    </View>
-  );
+const mockTranslations = {
+    'hello': 'здравствуйте',
+    'world': 'мир',
+    'good morning': 'доброе утро',
+    'good night': 'спокойной ночи',
+    'thank you': 'спасибо',
 };
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: 'center',
-    backgroundColor: 'black',
-    padding: 20,
-  },
-  text: {
-    color: 'white',
-    fontSize: 24,
-    fontFamily: 'monospace',
-  },
-});
+function translate(text, targetLanguage) {
+    return new Promise((resolve) => {
+        setTimeout(() => {
+            const lowerCasedText = text.trim().toLowerCase();
+            resolve(mockTranslations[lowerCasedText] || 'Translation not found');
+        }, 500);
+    });
+}
 
-export default App;
+export default function App() {
+    const [text, setText] = useState('');
+    const [translatedText, setTranslatedText] = useState('');
+
+    const handleTranslate = async () => {
+        const result = await translate(text, 'ru');
+        setTranslatedText(result);
+    };
+
+    return (
+        <SafeAreaView style={styles.container}>
+            <Text style={styles.title}>Translator</Text>
+            <TextInput
+                style={styles.input}
+                placeholder="Enter text in English"
+                value={text}
+                onChangeText={setText}
+            />
+            <Button title="Translate" onPress={handleTranslate} />
+            {translatedText ? (
+                <View style={styles.translationBox}>
+                    <Text style={styles.translationText}>{translatedText}</Text>
+                </View>
+            ) : null}
+        </SafeAreaView>
+    );
+}
+
+const styles = StyleSheet.create({
+    container: {
+        padding: 20,
+        backgroundColor: '#FFFFFF',
+        height: '100%',
+    },
+    title: {
+        marginTop: 20,
+        marginBottom: 20,
+        fontSize: 24,
+        fontWeight: 'bold',
+        textAlign: 'center',
+    },
+    input: {
+        padding: 10,
+        borderColor: '#CCCCCC',
+        borderWidth: 1,
+        borderRadius: 10,
+        marginBottom: 20,
+    },
+    translationBox: {
+        marginTop: 20,
+        padding: 20,
+        backgroundColor: '#F0F0F0',
+        borderRadius: 10,
+    },
+    translationText: {
+        fontSize: 18,
+        color: '#333333',
+    },
+});
