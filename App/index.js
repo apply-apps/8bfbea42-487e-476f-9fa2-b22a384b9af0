@@ -10,6 +10,9 @@ const mockTranslations = {
     'good morning': 'доброе утро',
     'good night': 'спокойной ночи',
     'thank you': 'спасибо',
+    'apple': 'яблоко',
+    'orange': 'апельсин',
+    // Add more translations as needed
 };
 
 function translate(text, targetLanguage) {
@@ -51,9 +54,9 @@ export default function App() {
 
 const styles = StyleSheet.create({
     container: {
+        flex: 1,
         padding: 20,
         backgroundColor: '#FFFFFF',
-        height: '100%',
     },
     title: {
         marginTop: 20,
